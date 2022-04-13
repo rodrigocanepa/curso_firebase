@@ -1,5 +1,10 @@
+import 'dart:async';
+
+import 'package:curso_firebase/Providers/auth_provider.dart';
 import 'package:curso_firebase/UI/Screens/registration_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_overlay/loading_overlay.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -13,7 +18,19 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
   bool _protectPassword = true;
+  late AuthProvider authProvider;
 
+  checkIfUserIsLogged() async{
+    await Future.delayed(const Duration(seconds: 1));
+    authProvider.checkIfUserIsLogin(context);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkIfUserIsLogged();
+  }
   /// hacer esta pantalla: https://image.winudf.com/v2/image/Y29tLkxvZ2luQXBwLkxvZ2luQXBwX3NjcmVlbl8wXzE1MzI4NTgxNTRfMDUz/screen-0.jpg?fakeurl=1&type=.jpg
   @override
   void dispose() {
@@ -25,15 +42,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _header(),
-            const SizedBox(height: 20.0),
-            _formulary(),
-          ],
+
+    authProvider = Provider.of<AuthProvider>(context, listen: true);
+    return LoadingOverlay(
+      isLoading: authProvider.loading,
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _header(),
+              const SizedBox(height: 20.0),
+              _formulary(),
+            ],
+          ),
         ),
       ),
     );
@@ -162,7 +184,29 @@ class _LoginScreenState extends State<LoginScreen> {
                   primary: Colors.blue.shade800
               ),
               onPressed: (){
-
+                if(_controllerEmail.text.trim().isEmpty){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Tu correo está vacío"),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                  return;
+                }
+                if(_controllerPassword.text.trim().length < 6){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Tu contraseña debe ser por lo menos de 6 caracteres"),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                  return;
+                }
+                authProvider.loginWithEmailAndPassword(
+                    email: _controllerEmail.text.trim(),
+                    password: _controllerPassword.text.trim(),
+                    context: context
+                );
               },
               child: const Text(
                 'Login',

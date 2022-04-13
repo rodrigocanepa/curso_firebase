@@ -1,1 +1,2 @@
-const String REFERENCE_USERS = "Vehicles";
+const String REFERENCE_USERS = "Users";
+const String REFERENCE_COURIERS = "Couriers";

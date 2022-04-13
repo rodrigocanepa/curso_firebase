@@ -1,6 +1,7 @@
 
 
 import 'package:curso_firebase/Firebase/querys.dart';
+import 'package:curso_firebase/Models/courier_model.dart';
 import '../Models/user_model.dart';
 
 class FetchData{
@@ -16,6 +17,17 @@ class FetchData{
       print(e);
       return null;
     }
+  }
+
+  Future<List<CourierModel>> getCourierList() async {
+
+    List<CourierModel> courierList = [];
+
+    final documents = await QuerysService().getAllCouriers();
+    dynamic miInfo = documents.docs;
+    courierList = (miInfo as List).map((i) => CourierModel.fromJson(i.data().cast<String, dynamic>())).toList();
+
+    return courierList;
   }
 
   /*Future<List<StepModel>> getStepsList(String idGoal) async {

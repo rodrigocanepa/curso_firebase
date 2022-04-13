@@ -12,6 +12,9 @@ class QuerysService{
     return await _fireStore.collection(REFERENCE_USERS).doc(id).get();
   }
 
+  Future<QuerySnapshot> getAllCouriers() async{
+    return await _fireStore.collection(REFERENCE_COURIERS).get();
+  }
   /*Future<QuerySnapshot> getStepsByGoal(String idGoal) async{
     return await _fireStore.collection(REFERENCE_STEPS).where('idGoal', isEqualTo: idGoal).orderBy('createdAt', descending: true).get();
   }

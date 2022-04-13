@@ -23,14 +23,14 @@ class AuthProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  checkIfUserIsLogin() async{
+  checkIfUserIsLogin(BuildContext context) async{
     //check shared info
     //String email = sharedInfo.getEmailSaved();
     //String pass = sharedInfo.getPassSaved();
 
     try{
-      loading = true;
-      notifyListeners();
+      //loading = true;
+      //notifyListeners();
       //give a delay for loading
       await Future.delayed(Duration(milliseconds: 100));
 
@@ -41,12 +41,13 @@ class AuthProvider extends ChangeNotifier{
         if(userModel != null){
           print('user registrered in database');
           this.userModel = userModel;
-          loading = false;
+          //loading = false;
           notifyListeners();
+          NavigationUtils().pushAndRemovePage(context, const MainScreen());
         } else{
           print('user is not in database');
           this.userModel = null;
-          loading = false;
+          //loading = false;
           notifyListeners();
         }
       }else{
@@ -56,7 +57,7 @@ class AuthProvider extends ChangeNotifier{
 
     } catch(e){
       print('error trying to check if user is login and registrered');
-      loading = false;
+      //loading = false;
       error = e.toString();
       //sharedInfo.clearLogin();
       notifyListeners();
@@ -83,6 +84,7 @@ class AuthProvider extends ChangeNotifier{
               duration: Duration(seconds: 3),
             ),
           );
+          loading = false;
           notifyListeners();
         }
       } else{
@@ -92,6 +94,7 @@ class AuthProvider extends ChangeNotifier{
             duration: Duration(seconds: 3),
           ),
         );
+        loading = false;
         notifyListeners();
       }
     } else{
